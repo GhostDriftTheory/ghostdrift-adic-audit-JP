@@ -1,4 +1,4 @@
-# Ghost Drift Audit (ADIC) — Scientific Integrity v8.0
+# Ghost Drift Audit (ADIC) 
 
 LightGBM の予測を **「責任ある道具」**に変換するための、監査（Audit）＋証明書（Certificate）＋台帳（Ledger）生成スクリプトです。  
 `commercial / paper / demo` の運用モードを同一コードで切り替えます。
