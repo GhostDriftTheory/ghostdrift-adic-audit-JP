@@ -33,7 +33,7 @@ Project Structure
 
 Execution Profiles (AUDIT_CONFIG['PROFILE'])
 
-運用フェーズに合わせ、監査の厳格性を以下の3モードから選択可能です。
+運用フェーズに合わせ、監査の厳格性を以下の3モードから選択可能です。詳細は公式マニュアルのPROFILEセクションを参照してください。
 
 Profile
 
@@ -123,4 +123,4 @@ Data: Synthetic dataset for demonstration purposes.
 
 「予測」を「責任」へ。
 Produced by GhostDrift Mathematical Institute (GMI)
-Official Website
+Official Website | Online Documentation
