@@ -1,149 +1,126 @@
-# Ghost Drift Audit (ADIC) 
+🌀 Ghost Drift Audit (ADIC)
 
-LightGBM の予測を **「責任ある道具」**に変換するための、監査（Audit）＋証明書（Certificate）＋台帳（Ledger）生成スクリプトです。  
-`commercial / paper / demo` の運用モードを同一コードで切り替えます。
+Framework for Predictive Accountability & Mathematical Integrity
 
----
+ghost-drift-audit-jp は、機械学習モデル（LightGBM等）の予測プロセスに対し、**数学的説明責任（Mathematical Accountability）**を付与するための監査エンジンです。ADIC (Analytically Derived Interval Computation) 理論の実装により、AIをブラックボックスから「検証可能な責任ある道具」へと再定義します。
 
-## 重要: 同梱CSVはダミー（合成データ）
+💎 Design Philosophy: From "Probabilistic" to "Accountable"
 
-このリポジトリに置く `electric_load_weather.csv` と `power_usage.csv` は **ダミー（合成データ）**です。  
-権利関係が不明な実データ（電力会社・気象機関などの配布物）は同梱しません。
+従来のAI運用が抱える「不透明な推論」という課題に対し、本フレームワークは以下の3点を保証します。
 
-- 目的: スクリプトが **エラーなく起動**し、`adic_out/` に成果物を出力できることの確認
-- 実運用・論文用途: **自分が利用権限を持つ実データに置き換えてください**
+Audit-First Design: 予測実行と同時に、第三者が検証可能な「証拠（Evidence）」を自動生成。
 
----
+Immutable Fingerprints: 入力データと設定パラメータのハッシュ指紋を固定し、後付けの改ざんを抑止。
 
-## リポジトリ構成（推奨）
+Verifiable Integrity: 統計的な最適性ではなく、運用ルールに対する「誠実な振る舞い」を可視化。
 
-```
+🛠 Technical Specifications
+
+System Requirements
+
+Language: Python 3.10 or higher
+
+Core Dependencies: numpy, pandas, matplotlib, lightgbm
+
+Project Structure
+
 .
-├─ ghost_drift_audit.py
-├─ electric_load_weather.csv
-├─ power_usage.csv
-└─ adic_out/                    # 実行後に自動生成
-```
+├── ghost_drift_audit.py      # Core Logic & ADIC Audit Engine
+├── electric_load_weather.csv  # Input: Weather Time-series (Synthetic)
+├── power_usage.csv            # Input: Demand Time-series (Synthetic)
+└── adic_out/                  # Output: Compliance Artifacts & Ledger
 
----
 
-## Quick Start
+Execution Profiles (AUDIT_CONFIG['PROFILE'])
 
-1) CSV を `.py` と同じフォルダへ配置
-- `electric_load_weather.csv`
-- `power_usage.csv`
+運用フェーズに合わせ、監査の厳格性を以下の3モードから選択可能です。
 
-※ もし手元のダミーCSVが `*_dummy.csv` 名なら、以下にリネームしてください
-- `electric_load_weather_dummy.csv` → `electric_load_weather.csv`
-- `power_usage_dummy.csv` → `power_usage.csv`
+Profile
 
-2) 実行
-```bash
-python ghost_drift_audit.py
-```
+Target Audience
 
-3) 出力（`adic_out/`）を確認
-- `certificate.json`
-- `ledger.csv`
-- `events.csv`
-- `evidence_timeseries.csv`
-- `business_summary.json`
+Integrity Level
 
----
+Features
 
-## 入力CSV仕様（Data Contract）
+commercial
 
-### electric_load_weather.csv
+Enterprise Ops
 
-必須列
-- `DATETIME` : `YYYY-MM-DD HH:MM:SS`（1時間刻み推奨）
-- `TEMP`
+High
 
-`commercial / paper` で追加必須（コード設定により要求）
-- `HUMID`
-- `SUN`
+厳格なゲート判定、意思決定用Verdict（OK/NG）の自動生成。
 
-### power_usage.csv
+paper
 
-必須列
-- `DATETIME` : `YYYY-MM-DD HH:MM:SS`（1時間刻み）
-- `DEMAND` : 数値（負値なし推奨）
+Researchers
 
-注意
-- `DATETIME` で weather と demand を突合します。重なりが薄いと停止します。
+Rigid
 
----
+分割ルールの固定による100%の計算再現性の担保。
 
-## 実行モード（PROFILE）
+demo
 
-スクリプト先頭の `AUDIT_CONFIG['PROFILE']` で切り替えます。
+Developers
 
-- `commercial`
-  - 外部CSV前提・厳格ゲート・証明書に Verdict（OK/NG）を出す
-- `paper`
-  - 分割ルールを固定して再現性を優先
-- `demo`
-  - 学習・デモ用途（判定を強く出さない設計）
+Flexible
 
----
+フレームワークの挙動理解を優先した緩和モード。
 
-## 出力物の意味
+🚀 Deployment & Usage
 
-- `certificate.json`
-  - 実行条件・入力指紋・主要メトリクス等をまとめた「証明書」
-- `ledger.csv`
-  - 証明書の要約を追記していく「台帳」
-- `events.csv`
-  - 監査イベント一覧
-- `evidence_timeseries.csv`
-  - 予測・残差・スコア・判定など、再検証の最小時系列
-- `business_summary.json`
-  - 意思決定向けの要約（badge / verdict / next_action 等）
+1. Setup Environment
 
----
-
-## 依存関係
-
-- Python 3.10+ 推奨
-- numpy / pandas / matplotlib / lightgbm
-
-```bash
 pip install numpy pandas matplotlib lightgbm
-```
 
----
 
-## 「あと一歩」だけ残るとしたら（追加実装なし）
+2. Prepare Data
 
-科学者が最後に気にするのは、「これって何を“保証”してて、何を“保証しない”の？」です。  
-レポートの完成度を上げるために、以下を **文章で固定**します。
+.py と同じディレクトリに以下のCSVを配置してください。
 
-### Scope / Non-claims
+[!CAUTION]
+同梱のCSVは合成データ（Dummy）です。
+スクリプトの正常動作確認用であり、実運用・研究用途では自身が権利を持つ実データに置き換えてください。
 
-**Scope（保証すること）**: 本手法は統計的最適性や真の因果を保証するものではなく、運用における介入判断のために、モデルの振る舞いと前提破綻（入力・分布・運用ルールの破れ）を可観測化し、証拠（証明書・台帳・時系列証拠）として残すことを目的とする。  
-**Non-claims（保証しないこと）**: 本手法は将来の誤差ゼロ、最良モデルの自動選択、外挿領域での一般化、全ての不正の完全検出を保証しない。スコアや閾値は運用設計であり、数学的に唯一の正解であることは主張しない。
+3. Run Audit Engine
 
-### Threat model（3行）
+python ghost_drift_audit.py
 
-- budget（予算制約）を口実に閾値を上げ、異常を見えなくする
-- rolling（基準更新）を都合よく動かし、比較基準そのものを改変する
-- 入力CSVの差し替え・欠損埋めの恣意・時刻ずらしで監査をすり抜ける
 
-上の脅威に対して、**cap（上限制約） / fingerprints（入力・設定の指紋） / suppressed（抑制・除外の記録）** を出力し、後から改変の余地が残りにくい形で「運用の証拠」を固定します。
+4. Verification of Artifacts (adic_out/)
 
-### スコア定義について
+実行後、以下のコンプライアンス成果物が生成されます。
 
-スコア定義はヒューリスティックです。たとえば `SCORE = max(S_RES, S_GRAD)` のように「大きい方を採用」するのは、見逃しを減らすための **保守的な設計判断**です。これは理論保証ではなく設計上の選択であるため、その旨をレポートに明記します。
+📜 certificate.json: 実行コンテキスト、データ指紋、判定サマリーを網羅した「証明書」。
 
----
+📑 ledger.csv: すべての予測と判定の履歴を蓄積する「台帳」。
 
-## License
+📉 evidence_timeseries.csv: 再検証（Re-verification）を可能にする最小粒度の時系列証拠。
 
-- コードのライセンスは `LICENSE` に従います。
-- CSV は合成データです（特定組織の実データではありません）。
+⚖️ Scope & Integrity (Safety Non-claims)
 
----
+🎯 Scope & Non-claims
 
-## 1行まとめ
+Scope（保証すること）: モデルの振る舞いと前提破綻（入力・分布の破れ）を可観測化し、運用上の介入判断のための証跡を固定すること。
 
-**「予測」ではなく「予測に責任を持つ」ための ADIC 監査＋証明書＋台帳の最小実装。**
+Non-claims（保証しないこと）: 将来の誤差ゼロ、数学的な「唯一の正解」の提示、外挿領域での一般化を保証するものではありません。
+
+🛡️ Threat Model
+
+ADICは以下の「運用の不誠実さ」に対する防御（記録）を提供します。
+
+閾値操作: 異常を隠蔽するための恣意的な閾値変更 → Cap（制約）の記録
+
+基準改変: 比較基準（Rolling Window等）の改変 → 設定指紋の固定
+
+データ捏造: 入力CSVの差し替えや時刻ずらし → Data Fingerprints による照合
+
+📜 License
+
+Code: MIT License
+
+Data: Synthetic dataset for demonstration purposes.
+
+「予測」を「責任」へ。
+Produced by GhostDrift Mathematical Institute (GMI)
+Official Website
