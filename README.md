@@ -4,6 +4,18 @@ Framework for Predictive Accountability & Mathematical Integrity
 
 ghost-drift-audit-jp は、機械学習モデル（LightGBM等）の予測プロセスに対し、**数学的説明責任（Mathematical Accountability）**を付与するための監査エンジンです。ADIC (Analytically Derived Interval Computation) 理論の実装により、AIをブラックボックスから「検証可能な責任ある道具」へと再定義します。
 
+🔗 Links
+
+GitHub (Source Code): https://github.com/GhostDriftTheory/ghostdrift-adic-audit-JP
+
+Main Script: ghost_drift_audit_JP.py
+
+Download ZIP: Archive
+
+Issues: Report Problems
+
+Docs: Online Documentation
+
 💎 Design Philosophy: From "Probabilistic" to "Accountable"
 
 従来のAI運用が抱える「不透明な推論」という課題に対し、本フレームワークは以下を提供します。
@@ -25,7 +37,7 @@ Core Dependencies: numpy, pandas, matplotlib, lightgbm
 Project Structure
 
 .
-├── ghost_drift_audit.py      # Core Logic & ADIC Audit Engine
+├── ghost_drift_audit_JP.py    # Core Logic & ADIC Audit Engine
 ├── electric_load_weather.csv  # Input: Weather Time-series (Synthetic)
 ├── power_usage.csv            # Input: Demand Time-series (Synthetic)
 └── adic_out/                  # Output: Compliance Artifacts & Ledger
@@ -92,7 +104,7 @@ pip install numpy pandas matplotlib lightgbm
 
 3. Run Audit Engine
 
-python ghost_drift_audit.py
+python ghost_drift_audit_JP.py
 
 
 4. Verification of Artifacts (adic_out/)
