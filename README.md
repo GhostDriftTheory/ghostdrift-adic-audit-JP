@@ -1,11 +1,9 @@
-# 🌀 Ghost Drift Audit (ADIC)
-
-**Framework for Predictive Accountability & Mathematical Integrity**
+**再現可能なドリフト検知のための証明書監査：時系列予測の実証**
 
 <div align="center">
 </div>
 
-ghost-drift-audit-jp は、機械学習モデル（LightGBM等）の予測プロセスに対し、**数学的説明責任（Mathematical Accountability）**を付与するための監査エンジンです。ADIC (Analytically Derived Interval Computation) 理論の実装により、AIをブラックボックスから「検証可能な責任ある道具」へと再定義します。
+ghost-drift-audit-jp は、運用中の時系列予測におけるドリフト（分布変化／regime shift）の判定を、**追試可能なプロトコル**として固定するための監査エンジンです。分割境界（split）、閾値ポリシー（thresholds）、入力データ同定、実行コード、実行環境を証明書（certificate）として一体化して出力し、第三者が同一入力から同一の監査結論（OK/NG）を再生成できる形にします。特に、推定は Calibration 期に限定し、Test 期は評価のみに用いることで、結果を見た後の閾値調整（後付け最適化）を構造的に排除します。ケーススタディとして、電力需要×気象の時系列データ（2024年1–4月）を対象に、証明書・台帳・エビデンス時系列を生成し、監査結論を再現可能なアーティファクトとして提示します。
 
 ## 🔗 Quick Links
 
