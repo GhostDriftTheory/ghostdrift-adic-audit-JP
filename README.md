@@ -6,11 +6,11 @@ ghost-drift-audit-jp は、機械学習モデル（LightGBM等）の予測プロ
 
 💎 Design Philosophy: From "Probabilistic" to "Accountable"
 
-従来のAI運用が抱える「不透明な推論」という課題に対し、本フレームワークは以下の3点を保証します。
+従来のAI運用が抱える「不透明な推論」という課題に対し、本フレームワークは以下を提供します。
 
 Audit-First Design: 予測実行と同時に、第三者が検証可能な「証拠（Evidence）」を自動生成。
 
-Immutable Fingerprints: 入力データと設定パラメータのハッシュ指紋を固定し、後付けの改ざんを抑止。
+Tamper-evident Fingerprints: 入力データと設定パラメータのハッシュ指紋を固定し、後付けの改変を検知可能にする。
 
 Verifiable Integrity: 統計的な最適性ではなく、運用ルールに対する「誠実な振る舞い」を可視化。
 
@@ -31,41 +31,49 @@ Project Structure
 └── adic_out/                  # Output: Compliance Artifacts & Ledger
 
 
-Execution Profiles (AUDIT_CONFIG['PROFILE'])
+<a id="profile"></a>
 
-運用フェーズに合わせ、監査の厳格性を以下の3モードから選択可能です。詳細は公式マニュアルのPROFILEセクションを参照してください。
+実行モード（Execution Profiles）: AUDIT_CONFIG['PROFILE']
+
+運用フェーズに合わせ、監査の厳格性を3モードから選択可能です（同一コードで切替）。
 
 Profile
 
-Target Audience
+想定読者 / 用途
 
-Integrity Level
+厳格さ
 
-Features
-
-commercial
-
-Enterprise Ops
-
-High
-
-厳格なゲート判定、意思決定用Verdict（OK/NG）の自動生成。
-
-paper
-
-Researchers
-
-Rigid
-
-分割ルールの固定による100%の計算再現性の担保。
+何が変わるか
 
 demo
 
-Developers
+学習・動作確認
 
-Flexible
+Low
 
-フレームワークの挙動理解を優先した緩和モード。
+判定を強く出さず、挙動理解と証拠出力を優先
+
+paper
+
+研究・再現実験
+
+Mid
+
+分割・seed等を固定し、計算再現性を最優先
+
+commercial
+
+実運用・意思決定支援
+
+High
+
+厳格ゲート + Verdict（OK/NG）を自動生成
+
+# 設定例
+AUDIT_CONFIG = {
+  "PROFILE": "demo",  # "demo" | "paper" | "commercial"
+}
+
 
 🚀 Deployment & Usage
 
@@ -107,7 +115,7 @@ Non-claims（保証しないこと）: 将来の誤差ゼロ、数学的な「�
 
 🛡️ Threat Model
 
-ADICは以下の「運用の不誠実さ」に対する防御（記録）を提供します。
+ADICは以下の「運用の不誠実さ」に対し、改変が起きた事実を検知できる形で記録します。
 
 閾値操作: 異常を隠蔽するための恣意的な閾値変更 → Cap（制約）の記録
 
