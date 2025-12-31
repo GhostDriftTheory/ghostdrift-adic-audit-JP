@@ -15,6 +15,14 @@ ghost-drift-audit-jp は、運用中の時系列予測におけるドリフト�
 
 ---
 
+## 📑 Audit Report (PDF)
+
+- **Report:** [Scientific Audit Report on Structural Integrity of Forecasting Models (JP)](./Scientific%20Audit%20Report%20on%20Structural%20Integrity%20of%20Forecasting%20Models_JP.pdf)
+- **Verdict:** NG (TAU_CAP_HIT)
+- **Protocol:** Ghost Drift Audit v8.0
+
+---
+
 ## 💎 Design Philosophy: From "Probabilistic" to "Accountable"
 
 従来のAI運用が抱える「不透明な推論」という課題に対し、本フレームワークは以下を提供します。
