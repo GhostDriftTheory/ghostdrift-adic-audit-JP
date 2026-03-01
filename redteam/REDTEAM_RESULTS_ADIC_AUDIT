@@ -1,0 +1,138 @@
+# ADIC Demo Red Team Report (ghostdrift-adic-audit)
+
+Generated at: 2026-03-01 (Asia/Tokyo)
+
+## 1. 目的
+本レポートは、GitHub リポジトリ **ghostdrift-adic-audit** の ADIC 監査デモに対し、
+**「第三者が再実行して同じ結論に到達できる（再計算可能性）」**と、
+**「改ざん・攻撃を検知して NG を固定できる（責任固定）」**ことを確認するために、
+レッドチーミング（攻撃シナリオ試験）を実施した結果をまとめたものです。
+
+- 対象リポジトリ: https://github.com/GhostDriftTheory/ghostdrift-adic-audit
+- 注意: リポジトリ内 URL の CSV は **ダミーデータ**のため使用しません。
+- 本試験は、添付の **実データ CSV（electric_load_weather.csv / power_usage.csv）**のみを入力として用います。
+
+## 2. スコープ（本レポートが保証すること / しないこと）
+### 保証すること
+- **Layer-A（指紋）**: 入力データ / 設定 / コード / 環境 / 証拠（evidence）が変われば NG になる
+- **Layer-B（意味論）**: 攻撃タイプごとに **固有の検知理由（reason）**が出る
+- **証拠拘束**: evidence の SHA が証明書と台帳にアンカーされ、verify で再照合される
+
+### 保証しないこと
+- モデル精度の優劣、予測性能、学習の妥当性
+- 外部アンカー（第三者タイムスタンプ/公開台帳等）による最終不可逆固定
+  - 本デモは、ローカル成果物の整合（同時改ざん耐性の強化）までを対象とします
+
+## 3. 実行物（レッドチーミング・ハーネス）
+- スクリプト: `run_redteam_script_final.py`
+- 入力: `electric_load_weather.csv`, `power_usage.csv`
+- 出力ディレクトリ: `redteam_runs/`
+
+出力（各 run_id ディレクトリ内）
+- `certificate.json`（証明書）
+- `ledger.csv`（台帳: redteam_runs 直下に集約）
+- `evidence_timeseries.csv`（検知理由の JSON を CSV で保存）
+- `env_info.json`（環境フィンガープリントの中身）
+
+## 4. 攻撃シナリオ
+本試験は、以下の攻撃クラスを実施します。
+
+### A. データ攻撃（Weather 側）
+- **A1 Demand spike**
+  - 目的: 局所スパイク（少数トークンの急変）
+  - 期待: `local_spike_detected`
+- **A2 Time-shift**
+  - 目的: 時系列 body の円環シフト
+  - 期待: `time_shift_detected`
+- **A3 Missing injection**
+  - 目的: 欠損（空欄）注入
+  - 期待: `missing_injection_detected`
+
+### B. 設定攻撃
+- **B1 Threshold manipulation**
+  - 目的: threshold の不正変更
+  - 期待: `threshold_changed`
+- **B2 Boundary exploration**
+  - 目的: threshold 近傍（diff_score ≈ threshold）を狙う広域摂動
+  - 期待: `near_threshold_perturbation`
+
+### C. データ攻撃（Power 側）
+- **C1 Baseline swap**
+  - 目的: 系列長の切り詰め（ベースライン置換）
+  - 期待: `baseline_series_changed`
+- **C2 Calibration window tamper**
+  - 目的: calibration_window の不正変更
+  - 期待: `config_sha_changed`
+
+### F. データ契約違反（読めるが契約違反）
+- **F Data contract violation**
+  - 目的: CSV は読めるが、ヘッダ契約（header signature）を破壊
+  - 期待: `data_contract_violation`
+
+### D. 成果物改ざん
+- **D2 Certificate tamper**
+  - 目的: 証明書の `env_sha` を改ざんし、verify が落ちること
+  - 期待: `tamper_detected`
+
+## 5. 検知設計（要件対応の要点）
+### 5.1 Layer-A（指紋 / tamper-evident）
+- `weather_sha_changed`, `power_sha_changed`, `config_sha_changed`, `threshold_changed`
+- `code_sha`, `env_sha` を証明書に含める
+
+### 5.2 Layer-B（意味論 / attack-specific）
+- **pandas パースに依存しない** Raw CSV 解析を導入
+  - multi-row header を許容
+  - body の円環シフト検出（A2）
+  - 同位置トークン差分で A1/B2 を判定（diff_score / max_rel_change / changed_tokens）
+
+### 5.3 Evidence 拘束（同時改ざん耐性の強化）
+- `evidence_sha` を算出し、
+  - `certificate.json` に保存
+  - `ledger.csv` に保存
+  - `verify_integrity()` で再照合
+
+## 6. 実行方法（再現手順）
+同一ディレクトリに以下 3 ファイルを配置して実行してください。
+
+- `run_redteam_script_final.py`
+- `electric_load_weather.csv`
+- `power_usage.csv`
+
+コマンド:
+```bash
+python run_redteam_script_final.py
+```
+
+出力:
+- `redteam_runs/` 以下に成果物が生成されます。
+- 要約テーブルは `redteam_runs/REDTEAM.md` に出力されます。
+
+（任意）Upstream 実行:
+- リポジトリ直下に `ghost_drift_audit_EN.py` が存在する場合、以下で upstream を起動し、
+  `adic_out/` の成果物を回収して最小検証（verify_upstream）します。
+```bash
+python run_redteam_script_final.py --mode upstream
+```
+
+## 7. 実行結果
+以下は本環境で `--mode protocol` により実行した結果です。
+
+| Attack ID | Expected | Observed (Reasoning) | PASS/FAIL |
+|---|---|---|---|
+| baseline | OK | OK | PASS |
+| A1 | NG | NG (weather_sha_changed, local_spike_detected) | PASS |
+| A2 | NG | NG (weather_sha_changed, time_shift_detected) | PASS |
+| A3 | NG | NG (weather_sha_changed, missing_injection_detected) | PASS |
+| B1 | NG | NG (config_sha_changed, threshold_changed) | PASS |
+| B2 | NG | NG (weather_sha_changed, near_threshold_perturbation, near_threshold_perturbation) | PASS |
+| C1 | NG | NG (power_sha_changed, baseline_series_changed) | PASS |
+| C2 | NG | NG (config_sha_changed) | PASS |
+| F | NG | NG (weather_sha_changed, data_contract_violation) | PASS |
+| D2 | tamper_detected | tamper_detected | PASS |
+
+## 8. 結論（報告文）
+本レッドチーミングでは、ADIC 監査デモの監査プロトコル（証明書・台帳・証拠拘束）に対し、
+A1〜F および D2 の攻撃シナリオを実行し、
+**Layer-A（改ざん指紋）と Layer-B（攻撃タイプ別の意味論的理由）を分離した形で NG 判定が固定されること**、
+および **evidence が証明書・台帳に拘束され verify で再照合可能であること**を確認しました。
+
