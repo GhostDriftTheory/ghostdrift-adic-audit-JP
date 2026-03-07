@@ -5,6 +5,17 @@
 
 ghost-drift-audit-jp は、運用中の時系列予測におけるドリフト（分布変化／regime shift）の判定を、**追試可能なプロトコル**として固定するための監査エンジンです。分割境界（split）、閾値ポリシー（thresholds）、入力データ同定、実行コード、実行環境を証明書（certificate）として一体化して出力し、第三者が同一入力から同一の監査結論（OK/NG）を再生成できる形にします。特に、推定は Calibration 期に限定し、Test 期は評価のみに用いることで、結果を見た後の閾値調整（後付け最適化）を構造的に排除します。ケーススタディとして、電力需要×気象の時系列データ（2024年1–4月）を対象に、証明書・台帳・エビデンス時系列を生成し、監査結論を再現可能なアーティファクトとして提示します。
 
+## Formal Verification
+
+The core lemma of the ADIC framework has been formally verified using the Lean theorem prover.
+
+Lean proof artifact:
+https://ghostdrifttheory.github.io/adic-lean-proof/
+
+Core file: `ADIC_RSound.lean`
+
+---
+
 ## 🔗 Quick Links
 
 * 📂 **Source Code:** [GitHub Repository](https://github.com/GhostDriftTheory/ghostdrift-adic-audit-JP)
