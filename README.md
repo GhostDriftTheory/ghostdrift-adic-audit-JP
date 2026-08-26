@@ -141,12 +141,18 @@ python ghost_drift_audit_JP.py
 
 ---
 
-## 📜 License & Acknowledgments
+## 📜 Rights & Patent Notice
 
-* **Code:** MIT License
-* **Data:** Synthetic dataset for demonstration.
+Copyright © GhostDrift Mathematical Institute. All rights reserved.
 
-Patent Notice: This repository implements techniques related to a pending patent application. Japanese Patent Application No. 特願2025-182213. This notice does not restrict use of the open-source code under the MIT License.
+No open-source license is granted for the source code in this repository.
+The source code is publicly available for inspection, reproducibility, and technical verification only.
 
+Reproduction, redistribution, modification, incorporation into other products or services, and commercial use are not permitted without prior written permission from the rights holder.
+
+This repository implements techniques related to Japanese Patent Application No. 特願2025-182213.
+No patent license is granted by publication of this repository.
+
+The included demonstration datasets are synthetic data.
 **「予測」を「責任」へ。**
 Produced by **GhostDrift Mathematical Institute (GMI)** — [Official Website](https://www.ghostdriftresearch.com/) | [Online Documentation](https://ghostdrifttheory.github.io/ghostdrift-adic-audit-JP/)
